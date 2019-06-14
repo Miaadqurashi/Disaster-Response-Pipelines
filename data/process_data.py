@@ -21,6 +21,7 @@ def clean_data(messages,categories):
         # convert to ints
         categories[column] = categories[column].astype(int)
     df = pd.merge(messages,categories,on='id')
+    df.drop_duplicates(inplace=True)
     return df
 
 
