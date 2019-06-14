@@ -1,4 +1,6 @@
 # Disaster Response Pipeline Project
+### Installations:
+Modules used are Pandas, SQLAlchemy, NLTK, Flask and plotly.
 
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
