@@ -4,12 +4,23 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
+    """
+    Loads messages and categories data
+    Inputs: messages_filepath , categories_filepath
+    Outputs: messages: Pandas Dataframe read from given filepath
+    categories: Pandas Dataframe read from given filepath
+    """
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
     return messages,categories
 
 
 def clean_data(messages,categories):
+    """
+    Cleans data by converting categories to a binary matrix
+    Inputs: messages and categoris DataFrame
+    Outputs: df: Cleaned Dataframe combined
+    """
     s = categories.categories[0]
     columns = re.compile("-\d;").split(s)
     columns[-1] = columns[-1][:-2] # last label has a number at the end.
@@ -26,8 +37,12 @@ def clean_data(messages,categories):
 
 
 def save_data(df, database_filename):
+    """
+    Saves cleaned DataFrame in a database file.
+    Inputs: database_filename : filename to save the database.
+    """
     engine = create_engine(f'sqlite:///{database_filename}')
-    df.to_sql('database_filename[:-3]', engine, index=False)  
+    df.to_sql("disaster_responces", engine, index=False)  
 
 
 def main():

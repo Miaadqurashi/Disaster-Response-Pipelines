@@ -1,24 +1,51 @@
 import sys
-
+# import libraries
+from sqlalchemy import create_engine
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+from build_model import build_model
+import pickle
+import re
 
 def load_data(database_filepath):
-    pass
+    """
+    Load the database 
+    I/P : database_filepath : filepath to database
+    O/P : X : numpy ndarray for the messages
+          Y : numpy ndarray for the category output in binary mode 36 columns
+    """
+    engine = create_engine(f'sqlite:///{database_filepath}')
+    df = pd.read_sql(f'SELECT * FROM disaster_responces',engine)
+    X = df.message.values
+    Y = df.iloc[:,4:].values
+    return X,Y,df.iloc[:,4:].columns
 
-
-def tokenize(text):
-    pass
-
-
-def build_model():
-    pass
+## Tokenize and build model are in a separate file to avoid pickling error
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
-    pass
+    '''
+    Evaluates model performance
+    I/P : model: model that classifies
+          X_test: test data
+          Y_test: test labels
+          category_names: list of category names
+    '''
+    y_test_pred = model.predict(X_test)
+    for i in range(Y_test.shape[1]):
+        print(f'{category_names[i]} Category:')
+        print(classification_report(Y_test[:,i],y_test_pred[:,i]))
 
 
 def save_model(model, model_filepath):
-    pass
+    '''
+    Saves the model with pickle in specified model_filepath
+    I/P : model : Sklearn classifier model
+          model_filepath : path to save the pickle file
+    '''
+    pickle.dump(model, open(model_filepath, 'wb'))
 
 
 def main():
@@ -33,6 +60,8 @@ def main():
         
         print('Training model...')
         model.fit(X_train, Y_train)
+        print("***********BEST PARAMETERS*********")
+        print(model.best_params_)
         
         print('Evaluating model...')
         evaluate_model(model, X_test, Y_test, category_names)
