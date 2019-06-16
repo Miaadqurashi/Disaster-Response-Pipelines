@@ -44,7 +44,7 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
-    
+    category_by_genre_counts = df.iloc[:,1:].groupby('genre').sum()
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
@@ -67,7 +67,29 @@ def index():
             }
         }
     ]
-    
+    for genre in category_by_genre_counts.index:
+        ## Related column was not used because it is the highest in all of them
+        ## and we want to analyze the differences 
+        data = category_by_genre_counts.loc[genre,:].sort_values(ascending=False)[1:6]
+        graphs.append({
+                    'data': [
+                            Bar(
+                                x=data.index.tolist(),
+                                y=data.tolist()
+                            )
+                            ],
+
+                'layout': {
+                    'title': f'Distribution of Message Categories in the {data.name} Genre',
+                    'yaxis': {
+                        'title': "Count"
+                    },
+                    'xaxis': {
+                        'title': "Category"
+                    }
+                }
+            
+                   })
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
     graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
