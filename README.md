@@ -1,4 +1,6 @@
 # Disaster Response Pipeline Project
+### Summary:
+    This project is a machine learnng web app designed to categories messages from disaster responces.
 ### Installations:
 Modules used are Pandas, SQLAlchemy, NLTK, Flask and plotly.
 
